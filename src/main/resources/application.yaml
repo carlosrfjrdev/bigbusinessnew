@@ -1,0 +1,23 @@
+server:
+  port: 8181
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-key-001}
+spring:
+  application:
+    name: BigBusiness
+  datasource:
+    url: jdbc:postgresql://localhost:5432/person-financial
+    username: postgres
+    password: zqseol01
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+
+    properties:
+      hibernate:
+        show_sql: true
