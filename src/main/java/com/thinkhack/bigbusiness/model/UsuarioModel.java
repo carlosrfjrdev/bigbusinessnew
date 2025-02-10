@@ -26,7 +26,7 @@ import java.util.List;
 @Table(name = "tb_usuarios")
 public class UsuarioModel extends BaseModel implements Serializable, UserDetails {
 
-    private String name;
+    private String nome;
 
     @Size(max = 100)
     @Column(length = 100,unique = true)
@@ -38,7 +38,7 @@ public class UsuarioModel extends BaseModel implements Serializable, UserDetails
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private UserStatus status;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -51,7 +51,7 @@ public class UsuarioModel extends BaseModel implements Serializable, UserDetails
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     @JsonManagedReference
-    private ContaModel account;
+    private ContaModel conta;
 
 
     @Override

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ContaRepository extends JpaRepository<ContaModel, UUID> {
 
-    Optional<ContaModel> findByAccountUsers (String username);
-    boolean existsByAccountUsers(String username);
-    boolean existsByAccountName(String accountName);
+    Optional<ContaModel> findByUsuariosDaConta (String username);
+    boolean existsByUsuariosDaConta (String username);
+    boolean existsByNomeDaConta(String accountName);
 }

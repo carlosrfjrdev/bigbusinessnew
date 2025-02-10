@@ -10,8 +10,9 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "tb_conta_prov")
-public class ContaProvModel extends BaseModel implements Serializable {
+@Table(name = "tb_classif_prov")
+public class ClassificacaoProvisionamentoModel extends BaseModel implements Serializable {
 
+    private String classificacao;
 
 }

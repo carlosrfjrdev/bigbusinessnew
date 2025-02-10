@@ -14,12 +14,12 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "tb_conta_ops")
-public class ContaOpsModel extends BaseModel implements Serializable {
+public class ContaOperacionalModel extends BaseModel implements Serializable {
 
-    private ContaModel account;
-    private OperacaoType type;
-    private LocalDate postDate;
-    private BigDecimal value;
-    private String description;
+    private ContaModel conta;
+    private OperacaoType tipo;
+    private LocalDate dataTransacao;
+    private BigDecimal valor;
+    private String descricao;
 
 }

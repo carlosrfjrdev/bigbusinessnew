@@ -18,11 +18,11 @@ public class ContaModel extends BaseModel implements Serializable {
 
     @Size(max = 50)
     @Column(length = 50,unique = true)
-    private String accountName;
+    private String nomeDaConta;
 
-    @OneToMany(mappedBy = "account",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "conta",fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<UsuarioModel> accountUsers;
+    private List<UsuarioModel> usuariosDaConta;
 
 
 }

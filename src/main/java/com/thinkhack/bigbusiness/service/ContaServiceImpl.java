@@ -25,6 +25,10 @@ public class ContaServiceImpl implements ContaService {
         return contaRepository.findById(accountId);
     }
 
+    @Override
+    public Optional<ContaModel> findByAccountMaster_Username(String username) {
+        return Optional.empty();
+    }
 
 
     @Override
@@ -40,6 +44,11 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public ContaModel saveAccountModel(ContaModel contaModel) {
         return contaRepository.save(contaModel);
+    }
+
+    @Override
+    public boolean existsByAccountMaster_Username(String username) {
+        return false;
     }
 
 

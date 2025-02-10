@@ -13,7 +13,7 @@ public interface ContaService {
 
     Optional<ContaModel> findById(UUID accountId);
 
-//    Optional<ContaModel> findByAccountMaster_Username(String username);
+    Optional<ContaModel> findByAccountMaster_Username(String username);
 
     void delete(ContaModel contaModel);
 
@@ -21,7 +21,7 @@ public interface ContaService {
 
     ContaModel saveAccountModel(ContaModel contaModel);
 
-//    boolean existsByAccountMaster_Username(String username);
+    boolean existsByAccountMaster_Username(String username);
 
     boolean existsByAccountName(String accountName);
 
