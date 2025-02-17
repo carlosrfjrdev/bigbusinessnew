@@ -1,6 +1,6 @@
 package com.thinkhack.bigbusiness.controller;
 
-import com.thinkhack.bigbusiness.service.UsuarioService;
+import com.thinkhack.bigbusiness.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +12,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*", maxAge=3600)
 @RequestMapping("/v1/users")
-public class UsuarioController {
+public class UserController {
 
     @Autowired
-    private UsuarioService userService;
+    private UserService userService;
 
 
     @GetMapping("/{username}")

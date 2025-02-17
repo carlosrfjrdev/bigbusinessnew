@@ -1,12 +1,12 @@
 package com.thinkhack.bigbusiness.repository;
 
-import com.thinkhack.bigbusiness.model.UsuarioModel;
+import com.thinkhack.bigbusiness.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<UsuarioModel, UUID>  {
+public interface UserRepository extends JpaRepository<UserModel, UUID>  {
 
     UserDetails findByUsername(String username);
     boolean existsByUsername(String username);

@@ -2,5 +2,5 @@ package com.thinkhack.bigbusiness.dto;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-public record SigninResponseDTO(UserDetails user, String token) {
+public record AuthResponseDTO(UserDetails user, String token) {
 }

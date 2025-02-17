@@ -24,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_usuarios")
-public class UsuarioModel extends BaseModel implements Serializable, UserDetails {
+public class UserModel extends BaseModel implements Serializable, UserDetails {
 
     private String nome;
 

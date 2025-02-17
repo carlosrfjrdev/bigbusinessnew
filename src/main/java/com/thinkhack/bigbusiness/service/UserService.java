@@ -1,23 +1,23 @@
 package com.thinkhack.bigbusiness.service;
 
-import com.thinkhack.bigbusiness.model.UsuarioModel;
+import com.thinkhack.bigbusiness.model.UserModel;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UsuarioService {
+public interface UserService {
 
-    List<UsuarioModel> findAll();
+    List<UserModel> findAll();
 
-    Optional<UsuarioModel> findById(UUID userId);
+    Optional<UserModel> findById(UUID userId);
 
     Optional<UserDetails> findByUsername(String username);
 
-    void delete(UsuarioModel usuarioModel);
+    void delete(UserModel userModel);
 
-    void save(UsuarioModel usuarioModel);
+    void save(UserModel userModel);
 
     boolean existsByUsername(String username);
 

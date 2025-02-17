@@ -1,6 +1,6 @@
 package com.thinkhack.bigbusiness.service;
 
-import com.thinkhack.bigbusiness.model.UsuarioModel;
+import com.thinkhack.bigbusiness.model.UserModel;
 import com.thinkhack.bigbusiness.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,18 +11,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
 
     @Override
-    public List<UsuarioModel> findAll() {
+    public List<UserModel> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public Optional<UsuarioModel> findById(UUID userId) {
+    public Optional<UserModel> findById(UUID userId) {
         return userRepository.findById(userId);
     }
 
@@ -32,13 +32,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void delete(UsuarioModel usuarioModel) {
-        userRepository.delete(usuarioModel);
+    public void delete(UserModel userModel) {
+        userRepository.delete(userModel);
     }
 
     @Override
-    public void save(UsuarioModel usuarioModel) {
-        userRepository.save(usuarioModel);
+    public void save(UserModel userModel) {
+        userRepository.save(userModel);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.thinkhack.bigbusiness.controller;
 
 import com.thinkhack.bigbusiness.dto.AuthDTO;
-import com.thinkhack.bigbusiness.dto.SigninResponseDTO;
-import com.thinkhack.bigbusiness.dto.SingupDTO;
+import com.thinkhack.bigbusiness.dto.AuthResponseDTO;
+import com.thinkhack.bigbusiness.dto.NewUserDTO;
 import com.thinkhack.bigbusiness.enums.UserStatus;
 import com.thinkhack.bigbusiness.model.ContaModel;
-import com.thinkhack.bigbusiness.model.UsuarioModel;
+import com.thinkhack.bigbusiness.model.UserModel;
 import com.thinkhack.bigbusiness.security.TokenService;
 import com.thinkhack.bigbusiness.service.ContaService;
-import com.thinkhack.bigbusiness.service.UsuarioService;
+import com.thinkhack.bigbusiness.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @RestController
-//@CrossOrigin(origins = "*", maxAge=3600)
 @RequestMapping("/v1/auth")
 public class AuthController {
 
     @Autowired
-    private UsuarioService userService;
+    private UserService userService;
 
     @Autowired
     private ContaService accountService;
@@ -40,7 +39,7 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@RequestBody @Valid SingupDTO userDto){
+    public ResponseEntity<Object> registerUser(@RequestBody @Valid NewUserDTO userDto){
         if(userService.existsByUsername(userDto.username())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken|");
         }
@@ -50,7 +49,7 @@ public class AuthController {
         if(accountService.existsByAccountMaster_Username(userDto.username())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Account from username is Already Taken|");
         }
-        var userModel = new UsuarioModel();
+        var userModel = new UserModel();
         BeanUtils.copyProperties(userDto,userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
         userModel.setCreated(LocalDateTime.now(ZoneId.of("UTC")));
@@ -77,7 +76,7 @@ public class AuthController {
         var userPass = new UsernamePasswordAuthenticationToken(data.username(),data.password());
         var auth = this.authenticationManager.authenticate(userPass);
 
-        var token = tokenService.generateToken((UsuarioModel) auth.getPrincipal());
+        var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 
         var user = userService.findByUsername(data.username());
         System.out.println("Usuário Logou:"+data.username());
@@ -85,7 +84,7 @@ public class AuthController {
         if (user.isPresent()) {
 
 
-            return ResponseEntity.status(HttpStatus.OK).body(new SigninResponseDTO(user.get(),token));
+            return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(user.get(),token));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

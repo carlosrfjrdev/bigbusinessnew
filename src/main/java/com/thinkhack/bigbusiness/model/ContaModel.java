@@ -22,7 +22,7 @@ public class ContaModel extends BaseModel implements Serializable {
 
     @OneToMany(mappedBy = "conta",fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<UsuarioModel> usuariosDaConta;
+    private List<UserModel> usuariosDaConta;
 
 
 }
