@@ -1,4 +1,4 @@
-package com.thinkhack.bigbusiness.dto;
+package com.thinkhack.bigbusiness.model.dto;
 
 import com.thinkhack.bigbusiness.enums.UserRole;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ public record NewUserDTO(
         @NotBlank
         String username,
         @NotNull
-        String name,
+        String nome,
         @NotNull
         String email,
         @NotNull

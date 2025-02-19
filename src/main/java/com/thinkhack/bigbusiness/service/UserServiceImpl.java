@@ -2,6 +2,7 @@ package com.thinkhack.bigbusiness.service;
 
 import com.thinkhack.bigbusiness.model.UserModel;
 import com.thinkhack.bigbusiness.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<UserModel> findAll() {
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDetails> findByUsername(String username) {
+    public Optional<UserModel> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
 
@@ -37,8 +38,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserModel userModel) {
-        userRepository.save(userModel);
+    public UserModel save(UserModel userModel) {
+        return userRepository.save(userModel);
     }
 
     @Override

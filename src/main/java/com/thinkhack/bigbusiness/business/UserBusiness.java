@@ -1,20 +1,17 @@
 package com.thinkhack.bigbusiness.business;
 
-import com.thinkhack.bigbusiness.dto.NewUserDTO;
 import com.thinkhack.bigbusiness.enums.UserStatus;
-import com.thinkhack.bigbusiness.exception.EmailAlreadyExistsException;
-import com.thinkhack.bigbusiness.exception.ManageUserException;
-import com.thinkhack.bigbusiness.exception.UserAlreadyExistsException;
+import com.thinkhack.bigbusiness.exception.UserErrorException;
 import com.thinkhack.bigbusiness.model.UserModel;
 import com.thinkhack.bigbusiness.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,45 +19,56 @@ public class UserBusiness {
 
     private final UserService userService;
 
-    public UserModel registerUser(NewUserDTO newUserDTO){
-        if (!userService.existsByUsername(newUserDTO.username())){
-            throw new UserAlreadyExistsException(String.format("Usuário %s já existe na base",newUserDTO.username()));
+    public UserModel getUserByUsername(String username){
+        var user = userService.findByUsername(username);
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException(String.format("Usuário %s não encontrado", username));
         }
-        if (!userService.existsByEmail(newUserDTO.email())){
-            throw new EmailAlreadyExistsException(String.format("Email %s já existe na base",newUserDTO.email()));
+        return user.get();
+
+    }
+    public UserModel getUserById(String uuid){
+        UUID id;
+
+        try{
+            id = UUID.fromString(uuid);
+        } catch (Exception e){
+            throw new UserErrorException(String.format("ID %s é inválido",uuid));
         }
-        UserModel userModel = this.newUserConstructor(newUserDTO);
-        try {
-            userService.save(userModel);
-        } catch (Exception e) {
-            throw new ManageUserException("Falha ao criar o usuário: "+ e.getMessage());
+        var user = userService.findById(id);
+
+
+        if (user.isEmpty()){
+            throw new UserErrorException(String.format("Usuário com ID %s não encontrado", uuid));
         }
-        return userModel;
+
+        return user.get();
+
     }
 
-    private UserModel newUserConstructor(NewUserDTO newUserDTO) {
-        UserModel userModel = new UserModel();
+    public void inactiveUser(String username){
+        var user = userService.findByUsername(username);
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException(String.format("Usuário %s não encontrado", username));
+        }
 
-        BeanUtils.copyProperties(newUserDTO, userModel);
-        userModel.setStatus(UserStatus.ACTIVE);
-        userModel.setCreated(LocalDateTime.now(ZoneId.of("-03:00")));
-        userModel.setUpdated(LocalDateTime.now(ZoneId.of("-03:00")));
-        String encryptedPass = new BCryptPasswordEncoder().encode(newUserDTO.password());
-        userModel.setPassword(encryptedPass);
-        userModel.setUserRole(newUserDTO.role());
+        user.get().setStatus(UserStatus.INACTIVE);
+        user.get().setUpdated(LocalDateTime.now(ZoneId.of("-03:00")));
 
-       return userModel;
+        userService.save(user.get());
+
     }
 
-    public void updateUser (UserModel userModel){
-        if (!userService.existsByUsername(userModel.getUsername())){
+    public void updateUser(UserModel userModel){
+        //TODO: Criar updates
+    }
+    public void updateUserPass(UserModel userModel,String pass, String matchesPass){
+        //TODO: Criar updates Pass
+    }
 
-        }
-        if (!userService.existsByEmail(userModel.setEmail())){
+    public List<UserModel> getAll(){
 
-        }
-
-
+        return userService.findAll();
     }
 
 

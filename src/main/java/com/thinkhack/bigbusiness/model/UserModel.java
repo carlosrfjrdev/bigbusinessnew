@@ -29,7 +29,7 @@ public class UserModel extends BaseModel implements Serializable, UserDetails {
     private String nome;
 
     @Size(max = 100)
-    @Column(length = 100,unique = true)
+    @Column(length = 100)
     private String email;
 
     @Size(max = 50)
@@ -48,8 +48,8 @@ public class UserModel extends BaseModel implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conta_id")
     @JsonManagedReference
     private ContaModel conta;
 

@@ -13,16 +13,16 @@ public interface ContaService {
 
     Optional<ContaModel> findById(UUID accountId);
 
-    Optional<ContaModel> findByAccountMaster_Username(String username);
+    Optional<ContaModel> findByUser_Username(String username);
 
     void delete(ContaModel contaModel);
 
     void save(ContaModel contaModel);
 
-    ContaModel saveAccountModel(ContaModel contaModel);
+    ContaModel saveContaModel(ContaModel contaModel);
 
-    boolean existsByAccountMaster_Username(String username);
+    boolean existsByUser_Username(String username);
 
-    boolean existsByAccountName(String accountName);
+    boolean existsByNomeDaConta(String nomeDaConta);
 
 }

@@ -1,93 +1,88 @@
 package com.thinkhack.bigbusiness.controller;
 
-import com.thinkhack.bigbusiness.dto.AuthDTO;
-import com.thinkhack.bigbusiness.dto.AuthResponseDTO;
-import com.thinkhack.bigbusiness.dto.NewUserDTO;
-import com.thinkhack.bigbusiness.enums.UserStatus;
-import com.thinkhack.bigbusiness.model.ContaModel;
-import com.thinkhack.bigbusiness.model.UserModel;
-import com.thinkhack.bigbusiness.security.TokenService;
-import com.thinkhack.bigbusiness.service.ContaService;
-import com.thinkhack.bigbusiness.service.UserService;
+import com.thinkhack.bigbusiness.business.AuthBusiness;
+import com.thinkhack.bigbusiness.model.dto.AuthDTO;
+import com.thinkhack.bigbusiness.model.dto.ErrorHandleDTO;
+import com.thinkhack.bigbusiness.model.dto.NewUserDTO;
+import com.thinkhack.bigbusiness.exception.EmailAlreadyExistsException;
+import com.thinkhack.bigbusiness.exception.UserAlreadyExistsException;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final AuthBusiness authBusiness;
 
-    @Autowired
-    private ContaService accountService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private TokenService tokenService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@RequestBody @Valid NewUserDTO userDto){
-        if(userService.existsByUsername(userDto.username())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken|");
+    public ResponseEntity<?> registerUser(@RequestBody @Valid NewUserDTO newUserDTO){
+
+        try {
+            var status = HttpStatus.CREATED;
+            var body = authBusiness.registerUser(newUserDTO);
+            return ResponseEntity.status(status).body(body);
+        } catch (UserAlreadyExistsException|EmailAlreadyExistsException e ){
+            var status = HttpStatus.CONFLICT;
+            var body = new ErrorHandleDTO(
+                    status.value(),
+                    status,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.status(status).body(body);
+        } catch (Exception e){
+            var status = HttpStatus.INTERNAL_SERVER_ERROR;
+            var body = new ErrorHandleDTO(
+                    status.value(),
+                    status,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.status(status).body(body);
         }
-        if(userService.existsByEmail(userDto.email())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: email is Already Taken|");
-        }
-        if(accountService.existsByAccountMaster_Username(userDto.username())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Account from username is Already Taken|");
-        }
-        var userModel = new UserModel();
-        BeanUtils.copyProperties(userDto,userModel);
-        userModel.setUserStatus(UserStatus.ACTIVE);
-        userModel.setCreated(LocalDateTime.now(ZoneId.of("UTC")));
-        userModel.setUpdated(LocalDateTime.now(ZoneId.of("UTC")));
-        var encriptedPassword = new BCryptPasswordEncoder().encode(userDto.password());
-        userModel.setPassword(encriptedPassword);
-        userModel.setUserRole(userDto.role());
 
 
-        var accountModel = new ContaModel();
-
-        accountModel.setAccountName("Conta do "+userDto.username());
-        accountModel.setCreated(LocalDateTime.now(ZoneId.of("UTC")));
-        accountModel.setUpdated(LocalDateTime.now(ZoneId.of("UTC")));
-        // accountModel.setAccountMaster(userModel);
-       // accountModel.setAccountUsers(List.of(userModel));
-        userModel.setAccount(accountModel);
-        userService.save(userModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity signinUser(@RequestBody @Valid AuthDTO data){
-        var userPass = new UsernamePasswordAuthenticationToken(data.username(),data.password());
-        var auth = this.authenticationManager.authenticate(userPass);
+    public ResponseEntity<?> signinUser(@RequestBody @Valid AuthDTO authDTO){
 
-        var token = tokenService.generateToken((UserModel) auth.getPrincipal());
-
-        var user = userService.findByUsername(data.username());
-        System.out.println("Usuário Logou:"+data.username());
-
-        if (user.isPresent()) {
-
-
-            return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(user.get(),token));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            var status = HttpStatus.OK;
+            var body = authBusiness.login(authDTO);
+            return ResponseEntity.status(status).body(body);
+        } catch (UsernameNotFoundException e ){
+            var status = HttpStatus.NOT_FOUND;
+            var body = new ErrorHandleDTO(
+                    status.value(),
+                    status,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.status(status).body(body);
+        } catch (BadCredentialsException e){
+            var status = HttpStatus.FORBIDDEN;
+            var body = new ErrorHandleDTO(
+                    status.value(),
+                    status,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.status(status).body(body);
         }
+
+
 
     }
 

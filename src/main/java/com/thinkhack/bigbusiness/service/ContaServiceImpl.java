@@ -2,6 +2,7 @@ package com.thinkhack.bigbusiness.service;
 
 import com.thinkhack.bigbusiness.model.ContaModel;
 import com.thinkhack.bigbusiness.repository.ContaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ContaServiceImpl implements ContaService {
 
-    @Autowired
-    ContaRepository contaRepository;
+    private final ContaRepository contaRepository;
 
     @Override
     public List<ContaModel> findAll() {
@@ -26,8 +27,8 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public Optional<ContaModel> findByAccountMaster_Username(String username) {
-        return Optional.empty();
+    public Optional<ContaModel> findByUser_Username(String username) {
+        return contaRepository.findByUser_Username(username);
     }
 
 
@@ -42,18 +43,18 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public ContaModel saveAccountModel(ContaModel contaModel) {
+    public ContaModel saveContaModel(ContaModel contaModel) {
         return contaRepository.save(contaModel);
     }
 
     @Override
-    public boolean existsByAccountMaster_Username(String username) {
+    public boolean existsByUser_Username(String username) {
         return false;
     }
 
 
     @Override
-    public boolean existsByAccountName(String accountName) {
-        return contaRepository.existsByAccountName(accountName);
+    public boolean existsByNomeDaConta(String nomeDaConta) {
+        return contaRepository.existsByNomeDaConta(nomeDaConta);
     }
 }

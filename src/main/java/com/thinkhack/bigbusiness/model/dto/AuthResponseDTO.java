@@ -1,4 +1,4 @@
-package com.thinkhack.bigbusiness.dto;
+package com.thinkhack.bigbusiness.model.dto;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
