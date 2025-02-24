@@ -13,7 +13,7 @@ spring:
     password: zqseol01
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc:
         lob.non-contextual-creation: true
